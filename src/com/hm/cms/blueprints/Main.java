@@ -16,8 +16,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -33,13 +31,14 @@ public class Main {
         File dir = new File("F:\\AEM61V2");
         BundleCrawler bundleCrawler = new BundleCrawler(dir);
         List<BundleXmlInfo> bundleXmlInfoList = new ArrayList<>();
-        for (File bundleDir : bundleCrawler.getBundleBaseDirectories()) {
-            File bundleInfoFile = new File(bundleDir, "bundle.info");
-            File bundleFile = new File(bundleDir, "version0.0\\bundle.jar");
+        for (File baseBundleDir : bundleCrawler.getBundleBaseDirectories()) {
+            BundleDir bundleDir = new BundleDir(baseBundleDir);
+
+            File bundleFile = bundleDir.getBundleJarFile();
             if (bundleFile.exists()) {
                 try {
                     //System.out.println("Processing bundle: " + bundleFile.getCanonicalPath());
-                    String bundleFileName = getBundleJarFileName(bundleInfoFile);
+                    String bundleFileName = bundleDir.getBundleJarFileName();
                     List<MavenCoordinates> mavenCoordinates = getMavenCoordinates(bundleFile, bundleFileName);
                     ManifestInfo manifestInfo = getManifestInfo(bundleFile, bundleFileName);
                     BundleXmlInfo bundleInfo = new BundleXmlInfo(bundleFile.getAbsolutePath(), manifestInfo, mavenCoordinates);
@@ -49,7 +48,7 @@ public class Main {
                     System.out.println("Error processing bundle");
                 }
             } else {
-                System.out.println("No bundle file in directory: " + bundleDir.getName());
+                System.out.println("No bundle file in directory: " + baseBundleDir.getName());
             }
         }
         PomProducer pomProducer = new PomProducer("com.hm.cms.cqblueprints", "cqdependencies", "6.1.0", bundleXmlInfoList);
