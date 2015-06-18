@@ -14,13 +14,11 @@ public class PomProducer {
     }
 
     public String getXmlContent() {
-        StringBuilder result = new StringBuilder();
-        result.append(getHeading()).append("\n\n").
-                append(getCoordinatesSection()).append("\n\n").
-                append(getDecription()).append("\n\n").
-                append(getDependencyManagementSection()).append("\n").
-                append("</project>");
-        return result.toString();
+        return getHeading() + "\n\n" +
+                getCoordinatesSection() + "\n\n" +
+                getDecription() + "\n\n" +
+                getDependencyManagementSection() + "\n" +
+                "</project>";
     }
 
     private String getHeading() {
@@ -83,18 +81,138 @@ public class PomProducer {
     private String getDependencyManagementSection() {
         return "    <dependencyManagement>\n" +
                 "        <dependencies>\n" +
+                getManualDependencies() + "\n\n" +
                 getDependencies() +
                 "        </dependencies>\n" +
                 "    </dependencyManagement>";
+    }
+
+    private String getManualDependencies() {
+        return "<!--________________-->\n" +
+                "            <!-- MANUALLY ADDED -->\n" +
+                "            <!--________________-->\n" +
+                "            <dependency>\n" +
+                "                <groupId>javax.servlet.jsp</groupId>\n" +
+                "                <artifactId>jsp-api</artifactId>\n" +
+                "                <version>2.2</version>\n" +
+                "                <scope>provided</scope>\n" +
+                "            </dependency>\n" +
+                "            <!--\n" +
+                "                bundle jar:\n" +
+                "                    org.osgi.compendium-4.1.0.jar\n" +
+                "                exported packages:\n" +
+                "                    info.dmtree\n" +
+                "                    info.dmtree.notification\n" +
+                "                    info.dmtree.notification.spi\n" +
+                "                    info.dmtree.registry\n" +
+                "                    info.dmtree.security\n" +
+                "                    info.dmtree.spi\n" +
+                "                    org.osgi.application\n" +
+                "                    org.osgi.service.application\n" +
+                "                    org.osgi.service.cm\n" +
+                "                    org.osgi.service.component\n" +
+                "                    org.osgi.service.deploymentadmin\n" +
+                "                    org.osgi.service.deploymentadmin.spi\n" +
+                "                    org.osgi.service.device\n" +
+                "                    org.osgi.service.event\n" +
+                "                    org.osgi.service.http\n" +
+                "                    org.osgi.service.io\n" +
+                "                    org.osgi.service.log\n" +
+                "                    org.osgi.service.metatype\n" +
+                "                    org.osgi.service.monitor\n" +
+                "                    org.osgi.service.prefs\n" +
+                "                    org.osgi.service.provisioning\n" +
+                "                    org.osgi.service.upnp\n" +
+                "                    org.osgi.service.useradmin\n" +
+                "                    org.osgi.service.wireadmin\n" +
+                "                    org.osgi.util.gsm\n" +
+                "                    org.osgi.util.measurement\n" +
+                "                    org.osgi.util.mobile\n" +
+                "                    org.osgi.util.position\n" +
+                "                    org.osgi.util.tracker\n" +
+                "                    org.osgi.util.xml\n" +
+                "                embedded pom.xml path:\n" +
+                "                    no pom.xml found\n" +
+                "                error messages:\n" +
+                "                    could not find any embedded pom files\n" +
+                "            -->\n" +
+                "            <dependency>\n" +
+                "                <groupId>org.osgi</groupId>\n" +
+                "                <artifactId>org.osgi.compendium</artifactId>\n" +
+                "                <version>4.2.0</version>\n" +
+                "                <scope>provided</scope>\n" +
+                "            </dependency>\n" +
+                "\n" +
+                "            <!--\n" +
+                "                bundle jar:\n" +
+                "                    org.osgi.core-4.1.0.jar\n" +
+                "                exported packages:\n" +
+                "                    org.osgi.framework\n" +
+                "                    org.osgi.service.condpermadmin\n" +
+                "                    org.osgi.service.packageadmin\n" +
+                "                    org.osgi.service.permissionadmin\n" +
+                "                    org.osgi.service.startlevel\n" +
+                "                    org.osgi.service.url\n" +
+                "                embedded pom.xml path:\n" +
+                "                    no pom.xml found\n" +
+                "                error messages:\n" +
+                "                    could not find any embedded pom files\n" +
+                "            -->\n" +
+                "            <dependency>\n" +
+                "                <groupId>org.osgi</groupId>\n" +
+                "                <artifactId>org.osgi.core</artifactId>\n" +
+                "                <version>4.2.0</version>\n" +
+                "                <scope>provided</scope>\n" +
+                "            </dependency>\n" +
+                "\n" +
+                "            <!--\n" +
+                "                bundle jar:\n" +
+                "                    servlet-api-2.5.jar\n" +
+                "                exported packages:\n" +
+                "                    none\n" +
+                "                embedded pom.xml path:\n" +
+                "                    no pom.xml found\n" +
+                "                error messages:\n" +
+                "                    could not find any embedded pom files\n" +
+                "                    could not find Export-Package attribute in Manifest file\n" +
+                "            -->\n" +
+                "            <dependency>\n" +
+                "                <groupId>javax.servlet</groupId>\n" +
+                "                <artifactId>servlet-api</artifactId>\n" +
+                "                <version>2.5</version>\n" +
+                "                <scope>provided</scope>\n" +
+                "            </dependency>\n" +
+                "            <dependency>\n" +
+                "                <groupId>javax.jcr</groupId>\n" +
+                "                <artifactId>jcr</artifactId>\n" +
+                "                <version>2.0</version>\n" +
+                "                <scope>provided</scope>\n" +
+                "            </dependency>\n" +
+                "            <!--____________________-->\n" +
+                "            <!-- END MANUALLY ADDED -->\n" +
+                "            <!--____________________-->";
     }
 
     private String getDependencies() {
         StringBuilder result = new StringBuilder();
         for (BundleXmlInfo bundleXmlInfo : bundleXmlInfoList) {
             if (bundleXmlInfo.getMavenCoordinates().size() > 0) {
-                result.append(bundleXmlInfo.getPomXml()).append("\n");
+                boolean excludedDependency = isExcludedDependency(bundleXmlInfo);
+                result.append(bundleXmlInfo.getPomXml(excludedDependency)).append("\n");
             }
         }
         return result.toString();
+    }
+
+    private boolean isExcludedDependency(BundleXmlInfo bundleXmlInfo) {
+        MavenCoordinates mavenCoordinates = bundleXmlInfo.getMainMavenCoordinates();
+        if (mavenCoordinates != null) {
+            String groupId = mavenCoordinates.getGroupId();
+            String artifactId = mavenCoordinates.getArtifactId();
+            if ("com.adobe.xmp.worker".equals(groupId) && "files.native.fragment".equals(artifactId)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

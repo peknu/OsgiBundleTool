@@ -21,16 +21,22 @@ public class ManifestInfo {
                     could not find any embedded pom files
             -->
      */
-    private final String bundleJarFile;
+    private final String bundleJarFileWithVersion;
+    private final String actualFileName;
     private final List<String> exportedPackages;
 
-    public ManifestInfo(String bundleJarFile, List<String> exportedPackages) {
-        this.bundleJarFile = bundleJarFile;
+    public ManifestInfo(String bundleJarFileWithVersion, String actualFileName, List<String> exportedPackages) {
+        this.bundleJarFileWithVersion = bundleJarFileWithVersion;
+        this.actualFileName = actualFileName;
         this.exportedPackages = exportedPackages;
     }
 
-    public String getBundleJarFile() {
-        return bundleJarFile;
+    public String getBundleJarFileWithVersion() {
+        return bundleJarFileWithVersion;
+    }
+
+    public String getActualFileName() {
+        return actualFileName;
     }
 
     public List<String> getExportedPackages() {
@@ -40,7 +46,7 @@ public class ManifestInfo {
     @Override
     public String toString() {
         return "ManifestInfo{" +
-                "bundleJarFile='" + bundleJarFile + '\'' +
+                "bundleJarFileWithVersion='" + bundleJarFileWithVersion + '\'' +
                 ", exportedPackages=" + exportedPackages +
                 '}';
     }
@@ -48,7 +54,7 @@ public class ManifestInfo {
     public String getManifestXml() {
         return "            <!--\n" +
                 "                bundle jar:\n" +
-                "                    " + bundleJarFile + "\n" +
+                "                    " + bundleJarFileWithVersion + "\n" +
                 "                exported packages:\n" +
                 getExportPackageString() +
                 "            -->";

@@ -1,12 +1,18 @@
 import java.util.List;
 
 public class BundleXmlInfo {
+    private final String absoluteBundleFilePath;
     private final ManifestInfo manifestInfo;
     private final List<MavenCoordinates> mavenCoordinates;
 
-    public BundleXmlInfo(ManifestInfo manifestInfo, List<MavenCoordinates> mavenCoordinates) {
+    public BundleXmlInfo(String absoluteBundleFilePath, ManifestInfo manifestInfo, List<MavenCoordinates> mavenCoordinates) {
+        this.absoluteBundleFilePath = absoluteBundleFilePath;
         this.manifestInfo = manifestInfo;
         this.mavenCoordinates = mavenCoordinates;
+    }
+
+    public String getAbsoluteBundleFilePath() {
+        return absoluteBundleFilePath;
     }
 
     public ManifestInfo getManifestInfo() {
@@ -19,10 +25,9 @@ public class BundleXmlInfo {
 
     public MavenCoordinates getMainMavenCoordinates() {
         if (mavenCoordinates.size() > 1) {
-            String filename = manifestInfo.getBundleJarFile();
-            String prefix = filename.substring(0, filename.lastIndexOf('-'));
+            String filename = manifestInfo.getBundleJarFileWithVersion();
             for (MavenCoordinates mavenCoordinate : mavenCoordinates) {
-                if (mavenCoordinate.getArtifactId().equals(prefix)) {
+                if (filename.equals(mavenCoordinate.getArtifactId() + "-" + mavenCoordinate.getVersion() + ".jar")) {
                     return mavenCoordinate;
                 }
             }
@@ -32,14 +37,20 @@ public class BundleXmlInfo {
         return null;
     }
 
-    public String getPomXml() {
+    public String getPomXml(boolean excluded) {
         StringBuilder result = new StringBuilder();
         result.append(manifestInfo.getManifestXml()).append("\n");
         MavenCoordinates mavenCoordinate = getMainMavenCoordinates();
         if (mavenCoordinate != null) {
+            if (excluded) {
+                result.append("<!--\n");
+            }
             result.append(mavenCoordinate.getDependencyXml()).append("\n");
+            if (excluded) {
+                result.append("\n-->");
+            }
         } else {
-            throw new IllegalStateException("No main pom information forund in file " + manifestInfo.getBundleJarFile());
+            throw new IllegalStateException("No main pom information found in file " + manifestInfo.getBundleJarFileWithVersion());
         }
         return result.toString();
     }
