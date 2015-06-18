@@ -6,13 +6,13 @@ public class PomProducer {
     private final String groupId;
     private final String artifactId;
     private final String version;
-    private final List<BundleXmlInfo> bundleXmlInfoList;
+    private final List<BundleInfo> bundleInfoList;
 
-    public PomProducer(String groupId, String artifactId, String version, List<BundleXmlInfo> bundleXmlInfoList) {
+    public PomProducer(String groupId, String artifactId, String version, List<BundleInfo> bundleInfoList) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
-        this.bundleXmlInfoList = bundleXmlInfoList;
+        this.bundleInfoList = bundleInfoList;
     }
 
     public String getXmlContent() {
@@ -197,17 +197,17 @@ public class PomProducer {
 
     private String getDependencies() {
         StringBuilder result = new StringBuilder();
-        for (BundleXmlInfo bundleXmlInfo : bundleXmlInfoList) {
-            if (bundleXmlInfo.getMavenCoordinates().size() > 0) {
-                boolean excludedDependency = isExcludedDependency(bundleXmlInfo);
-                result.append(bundleXmlInfo.getPomXml(excludedDependency)).append("\n");
+        for (BundleInfo bundleInfo : bundleInfoList) {
+            if (bundleInfo.getMavenCoordinates().size() > 0) {
+                boolean excludedDependency = isExcludedDependency(bundleInfo);
+                result.append(bundleInfo.getPomXml(excludedDependency)).append("\n");
             }
         }
         return result.toString();
     }
 
-    private boolean isExcludedDependency(BundleXmlInfo bundleXmlInfo) {
-        MavenCoordinates mavenCoordinates = bundleXmlInfo.getMainMavenCoordinates();
+    private boolean isExcludedDependency(BundleInfo bundleInfo) {
+        MavenCoordinates mavenCoordinates = bundleInfo.getMainMavenCoordinates();
         if (mavenCoordinates != null) {
             String groupId = mavenCoordinates.getGroupId();
             String artifactId = mavenCoordinates.getArtifactId();

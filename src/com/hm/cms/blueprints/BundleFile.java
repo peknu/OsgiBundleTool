@@ -1,6 +1,5 @@
 package com.hm.cms.blueprints;
 
-import org.apache.ivy.osgi.core.BundleInfo;
 import org.apache.ivy.osgi.core.ExportPackage;
 import org.apache.ivy.osgi.core.ManifestParser;
 import org.xml.sax.SAXException;
@@ -29,10 +28,10 @@ public class BundleFile {
         this.bundleJarFile = bundleJarFile;
     }
 
-    public BundleXmlInfo getBundleXmlInfo() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, ParseException {
+    public BundleInfo getBundleXmlInfo() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, ParseException {
         List<MavenCoordinates> mavenCoordinates = getMavenCoordinates(bundleJarFile, bundleFileName);
         ManifestInfo manifestInfo = getManifestInfo(bundleJarFile, bundleFileName);
-        return new BundleXmlInfo(bundleJarFile.getAbsolutePath(), manifestInfo, mavenCoordinates);
+        return new BundleInfo(bundleJarFile.getAbsolutePath(), manifestInfo, mavenCoordinates);
     }
 
     private List<MavenCoordinates> getMavenCoordinates(File file, String fileName) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
@@ -68,7 +67,7 @@ public class BundleFile {
         JarFile jarFile = new JarFile(file);
         Manifest manifest = jarFile.getManifest();
         try {
-            BundleInfo bundleInfo = ManifestParser.parseManifest(manifest);
+            org.apache.ivy.osgi.core.BundleInfo bundleInfo = ManifestParser.parseManifest(manifest);
             Set<ExportPackage> exports = bundleInfo.getExports();
             List<String> exportedPackages = new ArrayList<>();
             for (ExportPackage exportPackage : exports) {

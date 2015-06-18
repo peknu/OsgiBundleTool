@@ -2,12 +2,12 @@ package com.hm.cms.blueprints;
 
 import java.util.List;
 
-public class BundleXmlInfo {
+public class BundleInfo {
     private final String absoluteBundleFilePath;
     private final ManifestInfo manifestInfo;
     private final List<MavenCoordinates> mavenCoordinates;
 
-    public BundleXmlInfo(String absoluteBundleFilePath, ManifestInfo manifestInfo, List<MavenCoordinates> mavenCoordinates) {
+    public BundleInfo(String absoluteBundleFilePath, ManifestInfo manifestInfo, List<MavenCoordinates> mavenCoordinates) {
         this.absoluteBundleFilePath = absoluteBundleFilePath;
         this.manifestInfo = manifestInfo;
         this.mavenCoordinates = mavenCoordinates;

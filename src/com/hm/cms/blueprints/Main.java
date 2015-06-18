@@ -21,14 +21,14 @@ public class Main {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, ParseException {
         File dir = new File("F:\\AEM61V2");
         BundleCrawler bundleCrawler = new BundleCrawler(dir);
-        List<BundleXmlInfo> bundleXmlInfoList = new ArrayList<>();
+        List<BundleInfo> bundleInfoList = new ArrayList<>();
         for (File baseBundleDir : bundleCrawler.getBundleBaseDirectories()) {
             BundleDir bundleDir = new BundleDir(baseBundleDir);
             if (bundleDir.existBundleFile()) {
                 try {
                     BundleFile bundleFile = bundleDir.getBundleFile();
-                    BundleXmlInfo bundleInfo = bundleFile.getBundleXmlInfo();
-                    bundleXmlInfoList.add(bundleInfo);
+                    BundleInfo bundleInfo = bundleFile.getBundleXmlInfo();
+                    bundleInfoList.add(bundleInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error processing bundle");
@@ -37,17 +37,17 @@ public class Main {
                 System.out.println("No bundle file in directory: " + baseBundleDir.getName());
             }
         }
-        PomProducer pomProducer = new PomProducer("com.hm.cms.cqblueprints", "cqdependencies", "6.1.0", bundleXmlInfoList);
+        PomProducer pomProducer = new PomProducer("com.hm.cms.cqblueprints", "cqdependencies", "6.1.0", bundleInfoList);
         //System.out.println(pomProducer.getXmlContent());
         //validateBundleInfoList(bundleXmlInfoList);
         //dumpFile(pomProducer.getXmlContent());
         //installBundlesToLocalRepo(bundleXmlInfoList);
     }
 
-    private static void installBundlesToLocalRepo(List<BundleXmlInfo> bundleXmlInfoList) throws IOException {
+    private static void installBundlesToLocalRepo(List<BundleInfo> bundleInfoList) throws IOException {
         StringBuilder installCommands = new StringBuilder();
-        for (BundleXmlInfo bundleXmlInfo : bundleXmlInfoList) {
-            String command = installBundleToLocalRepo(bundleXmlInfo);
+        for (BundleInfo bundleInfo : bundleInfoList) {
+            String command = installBundleToLocalRepo(bundleInfo);
             if (command != null) {
                 installCommands.append(command).append("\n");
             }
@@ -57,11 +57,11 @@ public class Main {
         Files.write(Paths.get("F:\\AEM61V2", "installLocal.sh"), installCommands.toString().getBytes());
     }
 
-    private static String installBundleToLocalRepo(BundleXmlInfo bundleXmlInfo) throws IOException {
-        String bundleJarFile = bundleXmlInfo.getAbsoluteBundleFilePath();
+    private static String installBundleToLocalRepo(BundleInfo bundleInfo) throws IOException {
+        String bundleJarFile = bundleInfo.getAbsoluteBundleFilePath();
         File file = new File(bundleJarFile);
-        if (bundleXmlInfo.getMainMavenCoordinates() != null) {
-            System.out.println("Installing bundle: " + bundleJarFile + " with pom.xml: " + bundleXmlInfo.getMainMavenCoordinates().getPomFilePath());
+        if (bundleInfo.getMainMavenCoordinates() != null) {
+            System.out.println("Installing bundle: " + bundleJarFile + " with pom.xml: " + bundleInfo.getMainMavenCoordinates().getPomFilePath());
 
             //String folderName = jarFile.substring(0, jarFile.lastIndexOf('.'));
             //Path targetDir = Paths.get("F:\\AEM61\\" + folderName);
@@ -71,7 +71,7 @@ public class Main {
                 Files.copy(Paths.get("F:\\AEM61\\" + jarFile), Paths.get(targetDir + "\\" + jarFile), StandardCopyOption.REPLACE_EXISTING);
             }*/
             JarFile jarBundleFile = new JarFile(bundleJarFile);
-            ZipEntry entry = jarBundleFile.getEntry(bundleXmlInfo.getMainMavenCoordinates().getPomFilePath());
+            ZipEntry entry = jarBundleFile.getEntry(bundleInfo.getMainMavenCoordinates().getPomFilePath());
             try(InputStream pomXmlInputStream = jarBundleFile.getInputStream(entry)) {
                 Files.copy(pomXmlInputStream, Paths.get(file.getParent() + "\\pom.xml"), StandardCopyOption.REPLACE_EXISTING);
             }
@@ -85,16 +85,16 @@ public class Main {
         return file.getParent().substring(11).replace('\\','/');
     }
 
-    private static void validateBundleInfoList(List<BundleXmlInfo> bundleXmlInfoList) {
-        for (BundleXmlInfo bundleXmlInfo : bundleXmlInfoList) {
-            validateBundleXmlInfo(bundleXmlInfo);
+    private static void validateBundleInfoList(List<BundleInfo> bundleInfoList) {
+        for (BundleInfo bundleInfo : bundleInfoList) {
+            validateBundleXmlInfo(bundleInfo);
         }
     }
 
-    private static void validateBundleXmlInfo(BundleXmlInfo bundleXmlInfo) {
-        if (bundleXmlInfo.getMavenCoordinates().size() > 1) {
-            System.out.println("File: " + bundleXmlInfo.getManifestInfo().getBundleJarFileWithVersion());
-            for (MavenCoordinates mavenCoordinates : bundleXmlInfo.getMavenCoordinates()) {
+    private static void validateBundleXmlInfo(BundleInfo bundleInfo) {
+        if (bundleInfo.getMavenCoordinates().size() > 1) {
+            System.out.println("File: " + bundleInfo.getManifestInfo().getBundleJarFileWithVersion());
+            for (MavenCoordinates mavenCoordinates : bundleInfo.getMavenCoordinates()) {
                 System.out.println(mavenCoordinates.toString());
             }
         }
