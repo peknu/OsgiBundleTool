@@ -1,3 +1,5 @@
+package com.hm.cms.blueprints;
+
 import org.apache.ivy.osgi.core.BundleInfo;
 import org.apache.ivy.osgi.core.ExportPackage;
 import org.apache.ivy.osgi.core.ManifestParser;

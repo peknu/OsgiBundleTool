@@ -1,3 +1,5 @@
+package com.hm.cms.blueprints;
+
 public class MavenCoordinates {
     private final String groupId;
     private final String artifactId;

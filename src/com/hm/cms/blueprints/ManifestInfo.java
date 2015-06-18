@@ -1,3 +1,5 @@
+package com.hm.cms.blueprints;
+
 import java.util.List;
 
 public class ManifestInfo {
