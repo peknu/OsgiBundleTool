@@ -31,10 +31,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, ParseException {
         File dir = new File("F:\\AEM61V2");
-        File[] bundleDirectories = dir.listFiles(pathname -> pathname.getName().startsWith("bundle") && pathname.isDirectory());
-        Arrays.sort(bundleDirectories, new FileNameComparator());
+        BundleCrawler bundleCrawler = new BundleCrawler(dir);
         List<BundleXmlInfo> bundleXmlInfoList = new ArrayList<>();
-        for (File bundleDir : bundleDirectories) {
+        for (File bundleDir : bundleCrawler.getBundleBaseDirectories()) {
             File bundleInfoFile = new File(bundleDir, "bundle.info");
             File bundleFile = new File(bundleDir, "version0.0\\bundle.jar");
             if (bundleFile.exists()) {
@@ -58,17 +57,6 @@ public class Main {
         //validateBundleInfoList(bundleXmlInfoList);
         //dumpFile(pomProducer.getXmlContent());
         //installBundlesToLocalRepo(bundleXmlInfoList);
-    }
-
-    private static class FileNameComparator implements Comparator<File> {
-        @Override
-        public int compare(File o1, File o2) {
-            return getBundleNumber(o1) - getBundleNumber(o2);
-        }
-
-        private int getBundleNumber(File file) {
-            return Integer.parseInt(file.getName().substring(6));
-        }
     }
 
     private static String getBundleJarFileName(File file) throws IOException {
