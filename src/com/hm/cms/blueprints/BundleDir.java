@@ -26,4 +26,12 @@ public class BundleDir {
     public File getBundleJarFile() {
         return new File(bundleDir, "version0.0\\bundle.jar");
     }
+
+    public boolean existBundleFile() {
+        return getBundleJarFile().exists();
+    }
+
+    public BundleFile getBundleFile() throws IOException {
+        return new BundleFile(getBundleJarFileName(), getBundleJarFile());
+    }
 }
