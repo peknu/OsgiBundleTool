@@ -80,7 +80,7 @@ public class BundleFile {
     public String getRemoteMvnInstallWindowsCommand() {
         String relativeParentPath = getRelativeParentPath(bundleJarFile);
         //TODO: Verify the 3rd party repo to deploy to check that the command works as expected (creating a .jar file and not a .bundle file etc.)
-        return "cmd /c \"mvn deploy:deploy-file -Dfile=" + relativeParentPath + "\\bundle.jar" + " -DpomFile=" + relativeParentPath + "\\pom.xml -Dpackaging=jar -Durl=http://nexus.hm.com/nexus/content/repositories/thirdparty/\"";
+        return "cmd /c \"mvn deploy:deploy-file -Dfile=" + relativeParentPath + "\\bundle.jar" + " -DpomFile=" + relativeParentPath + "\\pom.xml -Dpackaging=jar -DrepositoryId=nexus -Durl=http://nexus.hm.com/nexus/content/repositories/thirdparty/\"";
     }
 
     private String getRelativeParentPathForMacOs(File file) {
