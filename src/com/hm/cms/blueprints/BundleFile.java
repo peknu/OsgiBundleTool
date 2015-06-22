@@ -9,6 +9,9 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -18,20 +21,56 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 public class BundleFile {
     private final String bundleFileName;
     private final File bundleJarFile;
+    private BundleInfo cachedBundleInfo;
 
     public BundleFile(String bundleFileName, File bundleJarFile) {
         this.bundleFileName = bundleFileName;
         this.bundleJarFile = bundleJarFile;
     }
 
-    public BundleInfo getBundleXmlInfo() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, ParseException {
+    public BundleInfo getBundleInfo() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, ParseException {
+        if (cachedBundleInfo != null) {
+            return cachedBundleInfo;
+        }
         List<MavenCoordinates> mavenCoordinates = getMavenCoordinates(bundleJarFile, bundleFileName);
         ManifestInfo manifestInfo = getManifestInfo(bundleJarFile, bundleFileName);
-        return new BundleInfo(bundleJarFile.getAbsolutePath(), manifestInfo, mavenCoordinates);
+        cachedBundleInfo = new BundleInfo(bundleJarFile.getAbsolutePath(), manifestInfo, mavenCoordinates);
+        return cachedBundleInfo;
+    }
+
+    public boolean extractPomFile() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, ParseException {
+        JarFile jarBundleFile = new JarFile(bundleJarFile);
+        BundleInfo bundleInfo = getBundleInfo();
+        MavenCoordinates mainMavenCoordinates = bundleInfo.getMainMavenCoordinates();
+        if (mainMavenCoordinates != null) {
+            ZipEntry entry = jarBundleFile.getEntry(mainMavenCoordinates.getPomFilePath());
+            try (InputStream pomXmlInputStream = jarBundleFile.getInputStream(entry)) {
+                Files.copy(pomXmlInputStream, Paths.get(bundleJarFile.getParent() + "\\pom.xml"), StandardCopyOption.REPLACE_EXISTING);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public String getLocalMvnInstallWindowsCommand() {
+        return "cmd /c \"mvn install:install-file -Dfile=" + bundleJarFile.getParent() + "\\bundle.jar"  + " -DpomFile=" + bundleJarFile.getParent() + "\\pom.xml -Dpackaging=jar\"";
+    }
+
+    public String getLocaleMvnInstallMacOSCommand() {
+        return "mvn install:install-file -Dfile=" + getParentPath(bundleJarFile) + "/bundle.jar"  + " -DpomFile=" + getParentPath(bundleJarFile) + "/pom.xml -Dpackaging=jar";
+    }
+
+    public String getRemoteMvnInstallWindowsCommand() {
+        return "TODO"; //TODO
+    }
+
+    private static String getParentPath(File file) {
+        return file.getParent().substring(11).replace('\\','/');
     }
 
     private List<MavenCoordinates> getMavenCoordinates(File file, String fileName) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {

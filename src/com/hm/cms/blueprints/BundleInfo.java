@@ -45,11 +45,11 @@ public class BundleInfo {
         MavenCoordinates mavenCoordinate = getMainMavenCoordinates();
         if (mavenCoordinate != null) {
             if (excluded) {
-                result.append("<!--\n");
+                result.append("            <!--\n");
             }
             result.append(mavenCoordinate.getDependencyXml()).append("\n");
             if (excluded) {
-                result.append("\n-->");
+                result.append("            -->\n");
             }
         } else {
             throw new IllegalStateException("No main pom information found in file " + manifestInfo.getBundleJarFileWithVersion());

@@ -90,7 +90,7 @@ public class PomProducer {
     }
 
     private String getManualDependencies() {
-        return "<!--________________-->\n" +
+        return "             <!--________________-->\n" +
                 "            <!-- MANUALLY ADDED -->\n" +
                 "            <!--________________-->\n" +
                 "            <dependency>\n" +
