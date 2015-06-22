@@ -7,6 +7,11 @@ import java.util.Comparator;
 public class BundleCrawler {
     private final File baseDir;
 
+    /**
+     * Crawls the bundle structure to find all the relevant bundles
+     * @param baseDir Base felix install folder (D:\hmonline\servers\author\crx-quickstart\launchpad\felix\ or a copy
+     *                of that structure.
+     */
     public BundleCrawler(File baseDir) {
         this.baseDir = baseDir;
     }
@@ -23,7 +28,7 @@ public class BundleCrawler {
             return getBundleNumber(o1) - getBundleNumber(o2);
         }
 
-        private int getBundleNumber(File file) {
+        private int getBundleNumber(File file) {  //Extract the bundle number from bundleXX folder name
             return Integer.parseInt(file.getName().substring(6));
         }
     }

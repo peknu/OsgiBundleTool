@@ -28,6 +28,11 @@ public class BundleFile {
     private final File bundleJarFile;
     private BundleInfo cachedBundleInfo;
 
+    /**
+     *
+     * @param bundleFileName correct file name of the bundle.jar file, ex: org.apache.sling.commons.log-4.0.2.jar
+     * @param bundleJarFile bundle.jar file, ex: bundle10\version0.0\bundle.jar
+     */
     public BundleFile(String bundleFileName, File bundleJarFile) {
         this.bundleFileName = bundleFileName;
         this.bundleJarFile = bundleJarFile;
@@ -43,6 +48,11 @@ public class BundleFile {
         return cachedBundleInfo;
     }
 
+    /**
+     * Extract pom.xml file from the bundle.jar embedded file
+     * @return true if the pom.xml file could be extracted, indicating that the bundle is ok to install
+     * (of if the bundle.jar has correct "main" maven coordinates)
+     */
     public boolean extractPomFile() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, ParseException {
         JarFile jarBundleFile = new JarFile(bundleJarFile);
         BundleInfo bundleInfo = getBundleInfo();
@@ -58,19 +68,27 @@ public class BundleFile {
     }
 
     public String getLocalMvnInstallWindowsCommand() {
-        return "cmd /c \"mvn install:install-file -Dfile=" + bundleJarFile.getParent() + "\\bundle.jar"  + " -DpomFile=" + bundleJarFile.getParent() + "\\pom.xml -Dpackaging=jar\"";
+        String relativeParentPath = getRelativeParentPath(bundleJarFile);
+        return "cmd /c \"mvn install:install-file -Dfile=" + relativeParentPath + "\\bundle.jar"  + " -DpomFile=" + relativeParentPath + "\\pom.xml -Dpackaging=jar\"";
     }
 
     public String getLocaleMvnInstallMacOSCommand() {
-        return "mvn install:install-file -Dfile=" + getParentPath(bundleJarFile) + "/bundle.jar"  + " -DpomFile=" + getParentPath(bundleJarFile) + "/pom.xml -Dpackaging=jar";
+        String relativeParentPath = getRelativeParentPathForMacOs(bundleJarFile);
+        return "mvn install:install-file -Dfile=" + relativeParentPath + "/bundle.jar"  + " -DpomFile=" + relativeParentPath + "/pom.xml -Dpackaging=jar";
     }
 
     public String getRemoteMvnInstallWindowsCommand() {
         return "TODO"; //TODO
     }
 
-    private static String getParentPath(File file) {
-        return file.getParent().substring(11).replace('\\','/');
+    private String getRelativeParentPathForMacOs(File file) {
+        return getRelativeParentPath(file).replace('\\', '/');
+    }
+
+    private String getRelativeParentPath(File file) {
+        File parentPath = file.getParentFile();
+        String root = parentPath.getParentFile().getParent();
+        return parentPath.getPath().substring(root.length()+ 1);
     }
 
     private List<MavenCoordinates> getMavenCoordinates(File file, String fileName) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {

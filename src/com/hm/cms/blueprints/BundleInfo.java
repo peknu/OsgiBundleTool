@@ -25,6 +25,13 @@ public class BundleInfo {
         return mavenCoordinates;
     }
 
+    /**
+     * Get the maven coordinate of the "main" bundle. Some jundle.jar files may contain multiple entries/directories
+     * below the META-INF\maven\ directory. In that case, the artifactId + "-" + version should math the correct
+     * bundle file name from the bundle.info file.
+     *
+     * @return The main maven coordinates from the bundle.jar file
+     */
     public MavenCoordinates getMainMavenCoordinates() {
         if (mavenCoordinates.size() > 1) {
             String filename = manifestInfo.getBundleJarFileWithVersion();
@@ -39,6 +46,11 @@ public class BundleInfo {
         return null;
     }
 
+    /**
+     * Get the import pom.xml file content for the bundle
+     * @param excluded comment out this <dependency> section tn the pom file
+     * @return
+     */
     public String getPomXml(boolean excluded) {
         StringBuilder result = new StringBuilder();
         result.append(manifestInfo.getManifestXml()).append("\n");
