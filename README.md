@@ -12,7 +12,7 @@ F:\AEM61V2
   ...
   bundle442
      
-##The program is capable of:
+The program is capable of:
 1. Generate a pom.xml file that can be used in the dependencyManagement section of the parent pom file:
    <dependency>
      <groupId>com.hm.cms.cqblueprints</groupId>
@@ -24,7 +24,7 @@ F:\AEM61V2
 
 2. Extract pom.xml files from installed bundles and generate local or remote install script for Maven repo
      
-##Additional:
+Additional:
   com.day.cq.parent version 42 must be installed as a copy of version 40
   com.adobe.granite.parent version 33, 50, 52 and 54 must be installed as a copy of version 32
 The reason is that these versions are not available in any public repositories and can not be extracted from
