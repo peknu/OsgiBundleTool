@@ -15,7 +15,7 @@ public class Main {
     /**
      * Program to extract and install OSGi bundle information.
      * Operates on a directory structure directly from crx-quickstart\launchpad\felix\ or a copy of this structure.
-     * Should be a "clean" version of AEM 6.1.0 with no extra bundles install
+     * Should be a "clean" version of AEM 6.1.0 with no extra bundles installed
      *
      * The base dir below should point to the root folder of the structure.
      * For example:
