@@ -6,6 +6,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class Main {
      *
      *   Additional:
      *     com.day.cq.parent version 42 must be installed as a copy of version 40
-     *     com.adobe.granite.parent version 33, 50, 52 and 54 must be installed as a copy of version 32
+     *     com.adobe.granite.parent version 33, 35, 50, 52 and 54 must be installed as a copy of version 32
      *   The reason is that these versions are not available in any public repositories and can not be extracted from
      *   information in the installed OSGi bundles.
      */
@@ -68,9 +70,10 @@ public class Main {
         PomProducer pomProducer = new PomProducer("com.hm.cms.cqblueprints", "cqdependencies", "6.1.0", bundleInfoList);
         MavenRepoInstaller mavenRepoInstaller = new MavenRepoInstaller(bundleFileList);
 
-        System.out.println(pomProducer.getXmlContent());
+        //System.out.println(pomProducer.getXmlContent());
         //System.out.println(mavenRepoInstaller.getInstallLocalScript(true));
         //Files.write(Paths.get("F:\\AEM61V2", "cqdependencies-6.1.0.pom"), pomProducer.getXmlContent().getBytes());
         //Files.write(Paths.get("F:\\AEM61V2", "installLocal.bat"), mavenRepoInstaller.getInstallLocalScript(true).getBytes());
+        Files.write(Paths.get("F:\\AEM61V2", "installRemote5.bat"), mavenRepoInstaller.getInstallRemoteScript().getBytes());
     }
 }
